@@ -1,4 +1,4 @@
-# Vertical Slats Card V2
+# Vertical Slats Card 
 
 A polished Home Assistant Lovelace card that visually represents **vertical blinds** with animated slats.
 
