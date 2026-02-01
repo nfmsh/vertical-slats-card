@@ -23,7 +23,7 @@ This card keeps control honest while still giving you a clean, believable slat a
 
 Add your screenshots here:
 
-- `docs/screenshots/card-open.png`
+- ![Slat Card Open](/docs/screenshots/card-open.png)
 - `docs/screenshots/card-closed.png`
 - `docs/screenshots/editor.png`
 
