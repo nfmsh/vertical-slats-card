@@ -21,10 +21,16 @@ This card keeps control honest while still giving you a clean, believable slat a
 
 ## Demo / screenshots
 
-Add your screenshots here:
+Slat Card In Open State:
 
 ![Slat Card Open](/docs/screenshots/card-open.png)
+
+Slat Card In Closed state:
+
 ![Slat Card Closed](/docs/screenshots/card-closed.png)
+
+UI Card Editor:
+
 ![Slat Card Closed](/docs/screenshots/card-editor1.png)
 ![Slat Card Closed](/docs/screenshots/card-editor2.png)
 ![Slat Card Closed](/docs/screenshots/card-editor3.png)
