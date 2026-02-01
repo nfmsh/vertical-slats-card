@@ -297,6 +297,18 @@ These limitations are intentional and align with common real-world vertical blin
 
 ---
 
+## Support & feedback
+
+If you encounter a bug or have a feature request:
+
+- Open an issue on GitHub
+- Include your card configuration
+- Include Home Assistant version and browser if relevant
+
+Please note that feature requests should respect the design goals of the card, especially the separation between visual state and device capability.
+
+---
+
 ## License
 
 MIT (see `LICENSE`).
