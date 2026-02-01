@@ -7,7 +7,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.0] – 2026-02-01
+## [1.0.1] – 2026-02-01
 
 ### Added
 - Initial public release
