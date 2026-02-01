@@ -24,10 +24,12 @@ This card keeps control honest while still giving you a clean, believable slat a
 Add your screenshots here:
 
 - ![Slat Card Open](/docs/screenshots/card-open.png)
-- `docs/screenshots/card-closed.png`
-- `docs/screenshots/editor.png`
+- ![Slat Card Closed](/docs/screenshots/card-closed.png)
+- ![Slat Card Closed](/docs/screenshots/card-editor1.png)
+- ![Slat Card Closed](/docs/screenshots/card-editor2.png)
+- ![Slat Card Closed](/docs/screenshots/card-editor3.png)
 
-> Tip: In GitHub, you can drag-and-drop images into an issue or README to get URLs.
+
 
 ---
 
