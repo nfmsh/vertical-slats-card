@@ -1,4 +1,6 @@
-/* Vertical Slats Card V2 (Fabric + Lux Auto-tint, Safeguarded) + Editor hooks
+/* Vertical Slats Card
+ *
+ * Animated fabric-style vertical blinds for Home Assistant
  *
  * Required:
  *   entity: cover.*
@@ -22,19 +24,19 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-class VerticalSlatsCardV2 extends LitElement {
+class VerticalSlatsCard extends LitElement {
   static get properties() {
     return { hass: {}, config: {} };
   }
 
   // ---- Lovelace editor hooks ----
   static getConfigElement() {
-    return document.createElement("vertical-slats-card-v2-editor");
+    return document.createElement("vertical-slats-card-editor");
   }
 
   static getStubConfig() {
     return {
-      type: "custom:vertical-slats-card-v2",
+      type: "custom:vertical-slats-card",
       name: "Vertical Blinds",
       entity: "",
       visual_entity: "",
@@ -67,18 +69,15 @@ class VerticalSlatsCardV2 extends LitElement {
       show_meter: false,
       invert: false,
 
-      // colors
       slat_color: null,
       slat_shine_color: null,
 
-      // fabric & tint
       fabric_mode: true,
-      auto_tint: "off",   // "off" | "lux"
+      auto_tint: "off",
       light_entity: null,
       lux_min: 0,
       lux_max: 60000,
 
-      // scripts
       open_script: null,
       close_script: null,
 
@@ -136,7 +135,8 @@ class VerticalSlatsCardV2 extends LitElement {
     return this._getVisualTilt() >= 50 ? this._close() : this._open();
   }
 
-  // ---------- Auto-tint helpers ----------
+  /* ---------- Auto-tint helpers ---------- */
+
   _parseHexColor(input) {
     if (typeof input !== "string") return null;
     const hex = input.trim().replace("#", "");
@@ -190,7 +190,6 @@ class VerticalSlatsCardV2 extends LitElement {
     const baseHex = this.config.slat_color;
     const baseRgb = this._parseHexColor(baseHex);
 
-    // No valid base color → theme fallback, no tinting
     if (!baseRgb) {
       return {
         slatColor: baseHex || "var(--primary-text-color)",
@@ -202,7 +201,6 @@ class VerticalSlatsCardV2 extends LitElement {
 
     const k = this._getLuxFactorSafe();
     if (k === null) {
-      // Sensor unavailable → static base color
       return {
         slatColor: baseHex,
         shineColor: this.config.slat_shine_color || "rgba(255,255,255,0.25)",
@@ -231,11 +229,9 @@ class VerticalSlatsCardV2 extends LitElement {
   render() {
     if (!this.hass || !this.config) return html``;
 
-    const tilt = this._getVisualTilt(); // 0..100
+    const tilt = this._getVisualTilt();
     const t0 = tilt / 100;
     const t = this.config.invert ? (1 - t0) : t0;
-
-    // Thin..wide
     const sx = 0.10 + 0.90 * t;
 
     const slatCount = Math.max(3, Math.min(25, Number(this.config.slats)));
@@ -250,7 +246,7 @@ class VerticalSlatsCardV2 extends LitElement {
             <div class="title">${this.config.name}</div>
           </div>
 
-          <div class="viz" @click=${this._toggle} role="button" tabindex="0" aria-label="Toggle blinds">
+          <div class="viz" @click=${this._toggle} role="button" tabindex="0">
             <div
               class="slatRow"
               style="
@@ -272,24 +268,7 @@ class VerticalSlatsCardV2 extends LitElement {
                 `;
               })}
             </div>
-
-            ${this.config.show_meter ? html`
-              <div class="meter">
-                <div class="meterFill" style="width:${tilt}%;"></div>
-              </div>
-            ` : html``}
           </div>
-
-          ${this.config.show_buttons ? html`
-            <div class="buttons">
-              <button class="chip" @click=${(e) => { e.stopPropagation(); this._close(); }}>
-                Close
-              </button>
-              <button class="chip primary" @click=${(e) => { e.stopPropagation(); this._open(); }}>
-                Open
-              </button>
-            </div>
-          ` : html``}
         </div>
       </ha-card>
     `;
@@ -299,93 +278,32 @@ class VerticalSlatsCardV2 extends LitElement {
     return css`
       ha-card { overflow: hidden; }
       .wrap { padding: 14px; display: grid; gap: 12px; }
-
-      .header { display: flex; }
-      .title { font-size: 1.05rem; font-weight: 650; opacity: 0.95; }
-
-      .viz {
-        border-radius: 14px;
-        padding: 10px;
-        background: rgba(0,0,0,0.06);
-        cursor: pointer;
-        user-select: none;
-      }
-
-      .slatRow {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
-        gap: 6px;
-        height: 92px;
-      }
-
-      .slat {
-        position: relative;
-        border-radius: 10px;
-        overflow: hidden;
-      }
-
+      .title { font-size: 1.05rem; font-weight: 650; }
+      .viz { border-radius: 14px; padding: 10px; background: rgba(0,0,0,0.06); cursor: pointer; }
+      .slatRow { display: grid; grid-auto-flow: column; gap: 6px; height: 92px; }
+      .slat { position: relative; border-radius: 10px; overflow: hidden; }
       .slatBase, .slatShine {
         position: absolute;
         inset: 0;
         transform-origin: 50% 50%;
-        transform: scaleX(var(--lsx, var(--sx, 1)));
+        transform: scaleX(var(--lsx, var(--sx)));
         transition: transform 320ms ease;
         border-radius: 10px;
       }
-
-      .slatBase {
-        background: var(--slat-color);
-        opacity: var(--slat-base-opacity);
-      }
-
-      /* Fabric highlight: subtle, wide, low contrast */
+      .slatBase { background: var(--slat-color); opacity: var(--slat-base-opacity); }
       .slatShine {
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--shine-color),
-          transparent
-        );
+        background: linear-gradient(90deg, transparent, var(--shine-color), transparent);
         opacity: var(--slat-shine-opacity);
         mix-blend-mode: overlay;
       }
-
-      .meter {
-        height: 8px;
-        border-radius: 99px;
-        background: rgba(0,0,0,0.12);
-        overflow: hidden;
-        margin-top: 10px;
-      }
-      .meterFill {
-        height: 100%;
-        border-radius: 99px;
-        background: var(--primary-color);
-        opacity: 0.70;
-        transition: width 320ms ease;
-      }
-
-      .buttons { display: flex; justify-content: flex-end; gap: 8px; }
-      .chip {
-        border: 0;
-        border-radius: 999px;
-        padding: 8px 12px;
-        background: rgba(0,0,0,0.06);
-        color: var(--primary-text-color);
-        font-weight: 650;
-        cursor: pointer;
-      }
-      .chip.primary { background: rgba(0,0,0,0.10); }
-      .chip:active { transform: translateY(1px); }
     `;
   }
 }
 
-customElements.define("vertical-slats-card-v2", VerticalSlatsCardV2);
+customElements.define("vertical-slats-card", VerticalSlatsCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "vertical-slats-card-v2",
-  name: "Vertical Slats Card V2",
-  description: "Animated fabric vertical blinds with lux auto-tint and editor UI support.",
+  type: "vertical-slats-card",
+  name: "Vertical Slats Card",
+  description: "Animated fabric-style vertical blinds with optional lux auto-tint.",
 });
