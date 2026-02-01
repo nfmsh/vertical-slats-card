@@ -2,7 +2,7 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-class VerticalSlatsCardV2Editor extends LitElement {
+class VerticalSlatsCardEditor extends LitElement {
   static get properties() {
     return {
       hass: {},
@@ -16,14 +16,10 @@ class VerticalSlatsCardV2Editor extends LitElement {
 
   _valueChanged(ev) {
     if (!this._config || !this.hass) return;
+    if (!ev.detail || !ev.detail.value) return;
 
-    const detail = ev.detail;
-    if (!detail || !detail.value) return;
+    const newConfig = { ...this._config, ...ev.detail.value };
 
-    // Merge changes from ha-form
-    const newConfig = { ...this._config, ...detail.value };
-
-    // Normalize empty strings to undefined for cleaner YAML
     for (const k of Object.keys(newConfig)) {
       if (typeof newConfig[k] === "string" && newConfig[k].trim() === "") {
         delete newConfig[k];
@@ -43,23 +39,18 @@ class VerticalSlatsCardV2Editor extends LitElement {
     const c = this._config || {};
     const isLux = (c.auto_tint || "off") === "lux";
 
-    const base = [
+    const schema = [
       { name: "name", selector: { text: {} } },
       { name: "entity", selector: { entity: { domain: "cover" } } },
       { name: "visual_entity", selector: { entity: { domain: "input_number" } } },
-
       { name: "open_script", selector: { entity: { domain: "script" } } },
       { name: "close_script", selector: { entity: { domain: "script" } } },
-
       { name: "invert", selector: { boolean: {} } },
       { name: "show_buttons", selector: { boolean: {} } },
       { name: "show_meter", selector: { boolean: {} } },
-
       { name: "slats", selector: { number: { min: 3, max: 25, step: 1, mode: "slider" } } },
-
       { name: "slat_color", selector: { text: {} } },
       { name: "slat_shine_color", selector: { text: {} } },
-
       { name: "fabric_mode", selector: { boolean: {} } },
       {
         name: "auto_tint",
@@ -76,14 +67,14 @@ class VerticalSlatsCardV2Editor extends LitElement {
     ];
 
     if (isLux) {
-      base.push(
+      schema.push(
         { name: "light_entity", selector: { entity: { domain: "sensor" } } },
-        { name: "lux_min", selector: { number: { min: 0, max: 200000, step: 1, mode: "box" } } },
-        { name: "lux_max", selector: { number: { min: 0, max: 200000, step: 1, mode: "box" } } },
+        { name: "lux_min", selector: { number: { min: 0, max: 200000, step: 1 } } },
+        { name: "lux_max", selector: { number: { min: 0, max: 200000, step: 1 } } },
       );
     }
 
-    return base;
+    return schema;
   }
 
   _labelFor(name) {
@@ -110,43 +101,17 @@ class VerticalSlatsCardV2Editor extends LitElement {
 
   render() {
     if (!this.hass) return html``;
-    const cfg = this._config || {};
 
     return html`
-      <div class="wrap">
-        <ha-form
-          .hass=${this.hass}
-          .data=${cfg}
-          .schema=${this._schema()}
-          .computeLabel=${(s) => this._labelFor(s.name)}
-          @value-changed=${this._valueChanged}
-        ></ha-form>
-
-        <div class="hint">
-          Tip: For lux auto-tint, set <b>slat_color</b> to a hex value like <code>#3f4f45</code>.
-          If the sensor is unavailable, the card falls back to the base color automatically.
-        </div>
-      </div>
-    `;
-  }
-
-  static get styles() {
-    return css`
-      .wrap {
-        display: grid;
-        gap: 12px;
-        padding: 8px 0;
-      }
-      .hint {
-        font-size: 0.9rem;
-        opacity: 0.8;
-        padding: 8px 10px;
-        border-radius: 12px;
-        background: rgba(0,0,0,0.04);
-      }
-      code { font-family: monospace; }
+      <ha-form
+        .hass=${this.hass}
+        .data=${this._config}
+        .schema=${this._schema()}
+        .computeLabel=${(s) => this._labelFor(s.name)}
+        @value-changed=${this._valueChanged}
+      ></ha-form>
     `;
   }
 }
 
-customElements.define("vertical-slats-card-v2-editor", VerticalSlatsCardV2Editor);
+customElements.define("vertical-slats-card-editor", VerticalSlatsCardEditor);
