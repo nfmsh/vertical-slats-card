@@ -1,0 +1,9 @@
+{
+  "name": "Vertical Slats Card",
+  "content_in_root": false,
+  "render_readme": true,
+  "domains": [
+    "lovelace"
+  ],
+  "homeassistant": "2023.5.0"
+}
