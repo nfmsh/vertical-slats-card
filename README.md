@@ -1,5 +1,11 @@
 # Vertical Slats Card 
 
+
+[![HACS](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/default)
+[![GitHub Release](https://img.shields.io/github/v/release/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/releases)
+[![License](https://img.shields.io/github/license/nfmsh/vertical-slats-card)](LICENSE)
+[![GitHub Activity](https://img.shields.io/github/last-commit/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/commits/main)
+
 A polished Home Assistant Lovelace card that visually represents **vertical blinds** with animated slats.
 
 Built for the reality many of us live in: vertical blind motors that only support **open / close**, not tilt position.  
@@ -40,6 +46,41 @@ UI Card Editor:
 ---
 
 ## Installation
+
+Installation via HACS (recommended)
+
+This card is available through HACS.
+
+Steps:
+
+- Open HACS in Home Assistant
+
+- Go to Frontend
+
+- Click Explore & Download Repositories
+
+- Search for Vertical Slats Card
+
+- Select the card and click Download
+
+- Restart Home Assistant (or reload the frontend)
+
+- Add the card to your dashboard
+
+That’s it. No manual file copying required.
+
+After installation
+
+HACS automatically registers the card resources.
+You can now add the card from the Lovelace UI:
+
+- Edit your dashboard
+
+- Add Card
+
+- Search for Vertical Slats Card
+
+- Configure using the built-in editor UI
 
 ### Manual
 
@@ -235,6 +276,24 @@ PRs welcome. Keep changes:
 - backwards compatible where possible
 - config-driven (no hard-coded entity ids)
 - friendly to Home Assistant themes
+
+---
+
+## Known limitations
+
+- This card does **not** provide real tilt control.
+  Many vertical blind motors only expose `open_cover` / `close_cover`, and this card intentionally does not pretend otherwise.
+
+- Slat rotation is a **visual representation** driven by an `input_number` helper.
+  The helper reflects the *last commanded state*, not physical feedback from the motor.
+
+- Lux-based auto-tint adjusts **appearance only**.
+  It does not affect blind behavior or automation logic.
+
+- This card assumes a single blind group.
+  Per-slat or partial-rotation hardware is outside the scope of this project.
+
+These limitations are intentional and align with common real-world vertical blind hardware.
 
 ---
 
