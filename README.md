@@ -90,8 +90,8 @@ You can now add the card from the Lovelace UI:
 
 ```
 /config/www/vertical-slats-card/
-  ├─ vertical-slats-card-v2.js
-  └─ vertical-slats-card-v2-editor.js
+  ├─ vertical-slats-card.js
+  
 ```
 
 2. Add both as **JavaScript Module** resources:
@@ -99,8 +99,8 @@ You can now add the card from the Lovelace UI:
 **Settings → Dashboards → Resources → Add Resource**
 
 ```
-/local/vertical-slats-card/vertical-slats-card-v2.js
-/local/vertical-slats-card/vertical-slats-card-v2-editor.js
+/local/vertical-slats-card/vertical-slats-card.js
+
 ```
 
 3. Refresh your browser (hard refresh if needed).
@@ -170,7 +170,7 @@ script:
 ### Minimal config
 
 ```yaml
-type: custom:vertical-slats-card-v2
+type: custom:vertical-slats-card
 name: Living Room Blinds
 entity: cover.livingroom_blinds
 visual_entity: input_number.livingroom_slats_visual
@@ -179,7 +179,7 @@ visual_entity: input_number.livingroom_slats_visual
 ### Typical config (scripts + no meter)
 
 ```yaml
-type: custom:vertical-slats-card-v2
+type: custom:vertical-slats-card
 name: Living Room Blinds
 entity: cover.livingroom_blinds
 visual_entity: input_number.livingroom_slats_visual
@@ -311,6 +311,18 @@ Please note that feature requests should respect the design goals of the card, e
 
 ---
 
-## License
+## License & Attribution
 
-MIT (see `LICENSE`).
+This project is licensed under the MIT License.
+
+You are free to fork, modify, and redistribute this project under the terms of that license.
+
+If you publish a fork or derivative work, you must:
+
+- Retain the original copyright notice
+- Include a copy of the MIT license
+- Clearly indicate your changes
+
+Forking and improving the project is encouraged.
+
+Repackaging or redistributing it without proper attribution is a violation of the license and undermines the open source community.
