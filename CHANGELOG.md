@@ -8,8 +8,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ---
 
 ### [1.0.2] - 2026-02-15
+
 ### Fixed
 - Editor UI not showing
+
+---
 
 ## [1.0.1] – 2026-02-01
 
