@@ -5,7 +5,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Activity](https://img.shields.io/github/last-commit/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/commits/main)
-[![Community Forum](https://img.shields.io/badge/community-forum-brightgreen)]([https://community.home-assistant.io/](https://community.home-assistant.io/t/vertical-slats-card-fabric-style-vertical-blinds-hacs/982579))
+[![Community Forum](https://img.shields.io/badge/community-forum-brightgreen)](https://community.home-assistant.io/t/vertical-slats-card-fabric-style-vertical-blinds-hacs/982579)
 
 
 A polished Home Assistant Lovelace card that visually represents **vertical blinds** with animated slats.
