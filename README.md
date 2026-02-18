@@ -3,7 +3,7 @@
 
 [![HACS](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/default)
 [![GitHub Release](https://img.shields.io/github/v/release/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/releases)
-[![License](https://img.shields.io/github/license/nfmsh/vertical-slats-card)](LICENSE)
+[![License: MIT](https://img.shields.io/github/license/nfmsh/vertical-slats-card)](LICENSE)
 [![GitHub Activity](https://img.shields.io/github/last-commit/nfmsh/vertical-slats-card)](https://github.com/nfmsh/vertical-slats-card/commits/main)
 [![Community Forum](https://img.shields.io/badge/community-forum-brightgreen)]([https://community.home-assistant.io/](https://community.home-assistant.io/t/vertical-slats-card-fabric-style-vertical-blinds-hacs/982579))
 
