@@ -15,15 +15,31 @@ This card keeps control honest while still giving you a clean, believable slat a
 
 ---
 
-## Highlights
+## ✨ Features
 
-- 🎞️ Smooth animated vertical slats (DIV-based, no SVG transition weirdness)
-- 🧵 Fabric-friendly look (soft highlight, not glossy)
-- 🧠 Visual state via an `input_number` helper (0–100)
-- ☀️ Optional **lux-based auto-tint** (uses an illuminance sensor)
-- 🛡️ Safe fallback if sensors are `unknown` / `unavailable`
-- 🧩 Fully config-driven (no hard-coded entities)
-- 🧰 Built-in Lovelace editor UI (configure without YAML)
+- Animated vertical slats
+- Dynamic status badge:
+  - `OPENING`
+  - `OPEN`
+  - `CLOSING`
+  - `CLOSED`
+  - `OFFLINE`
+- Optional percentage display
+- Auto-hide Open / Close buttons
+- Motion-aware shine animation while moving
+- Realistic background lighting behind slats
+- Device calibration support (`device_min` / `device_max`)
+- Works with:
+  - `current_tilt_position`
+  - `current_position`
+- Automatic service detection:
+  - `set_cover_tilt_position`
+  - `set_cover_position`
+  - `open_cover` / `close_cover` fallback
+- Full UI editor support
+- Keyboard accessible
+- No helpers required
+- No scripts required
 
 ---
 
@@ -31,17 +47,13 @@ This card keeps control honest while still giving you a clean, believable slat a
 
 Slat Card In Open State:
 
-![Slat Card Open](/docs/screenshots/card-open.png)
+![Slat Card Open](/docs/screenshots/card-open1.1.0.png)
 
 Slat Card In Closed state:
 
-![Slat Card Closed](/docs/screenshots/card-closed.png)
+![Slat Card Closed](/docs/screenshots/card-closed1.1.0.png)
 
-UI Card Editor:
 
-![Slat Card Closed](/docs/screenshots/card-editor1.png)
-![Slat Card Closed](/docs/screenshots/card-editor2.png)
-![Slat Card Closed](/docs/screenshots/card-editor3.png)
 
 
 
@@ -86,7 +98,7 @@ You can now add the card from the Lovelace UI:
 
 ### Manual
 
-1. Copy the files from this repo's `dist/` folder into Home Assistant:
+1. Copy the file from this repo's `dist/` folder into Home Assistant:
 
 ```
 /config/www/vertical-slats-card/
@@ -94,7 +106,7 @@ You can now add the card from the Lovelace UI:
   
 ```
 
-2. Add both as **JavaScript Module** resources:
+2. Add as a **JavaScript Module** resource:
 
 **Settings → Dashboards → Resources → Add Resource**
 
@@ -107,198 +119,126 @@ You can now add the card from the Lovelace UI:
 
 ---
 
-## Required setup
+🔄 Migrating from v1.0.x
 
-### 1) A cover entity
-Your actual blinds device:
+Earlier versions of this card required:
 
-```yaml
-entity: cover.livingroom_blinds
-```
+  - input_number helpers
 
-### 2) A visual helper (`input_number`)
-This is used only for the animation:
+  - Open/Close scripts
 
-```yaml
-input_number:
-  livingroom_slats_visual:
-    min: 0
-    max: 100
-    step: 1
-```
+  - Automations to sync helper values
 
-- `0` = visually closed
-- `100` = visually open
+As of v1.1.0, **these are no longer required**.
 
----
+The card now:
 
-## Recommended scripts (optional, but keeps things tidy)
+  - Reads current_tilt_position automatically
 
-Use scripts so the card triggers one “thing” and your logic stays central:
+  - Falls back to current_position
 
-```yaml
-script:
-  livingroom_slats_open:
-    alias: Livingroom slats open
-    sequence:
-      - service: cover.open_cover
-        target:
-          entity_id: cover.livingroom_blinds
-      - service: input_number.set_value
-        target:
-          entity_id: input_number.livingroom_slats_visual
-        data:
-          value: 100
+  - Uses native cover services directly
 
-  livingroom_slats_close:
-    alias: Livingroom slats close
-    sequence:
-      - service: cover.close_cover
-        target:
-          entity_id: cover.livingroom_blinds
-      - service: input_number.set_value
-        target:
-          entity_id: input_number.livingroom_slats_visual
-        data:
-          value: 0
-```
+You can safely delete:
+
+  - Any input_number.* helpers created for slat visuals
+
+  - Any scripts created specifically for opening/closing slats
+
+  - Any automations syncing helpers to cover state
+
+⚠ Only remove helpers/scripts if they are no longer used elsewhere in your setup.
 
 ---
 
 ## Usage
 
-### Minimal config
-
+🧱 Basic Configuration
 ```yaml
 type: custom:vertical-slats-card
-name: Living Room Blinds
 entity: cover.livingroom_blinds
-visual_entity: input_number.livingroom_slats_visual
-```
-
-### Typical config (scripts + no meter)
-
-```yaml
-type: custom:vertical-slats-card
 name: Living Room Blinds
-entity: cover.livingroom_blinds
-visual_entity: input_number.livingroom_slats_visual
-open_script: script.livingroom_slats_open
-close_script: script.livingroom_slats_close
-invert: true
-show_meter: false
 ```
-
----
-
-## Fabric colours (dark green example)
-
-For dark green fabric blinds:
-
-```yaml
-slat_color: "#3f4f45"
-slat_shine_color: "rgba(255,255,255,0.16)"
-```
-
-Guideline: for fabric, shine is a *soft lift*, not a glossy reflection.
-
----
-
-## Lux auto-tint (optional)
-
-Auto-tint gently adjusts slat colour based on an illuminance sensor (typically outdoor).  
-It’s subtle: slightly washed in bright daylight, slightly deeper at dusk.
-
-```yaml
-fabric_mode: true
-auto_tint: lux
-light_entity: sensor.porch_lighting_sensor_illuminance
-lux_min: 0
-lux_max: 60000
-slat_color: "#3f4f45"  # hex recommended for tinting
-```
-
-### Safeguard behavior
-If the lux sensor is `unknown`, `unavailable`, missing, or non-numeric, the card falls back to `slat_color` without errors or flicker.
-
 ---
 
 ## Configuration options
 
-| Option | Type | Default | Notes |
-|---|---|---:|---|
-| `name` | string | `"Vertical Blinds"` | Card title |
-| `entity` | string | **required** | Cover entity |
-| `visual_entity` | string | **required** | `input_number` for visual state |
-| `open_script` | string | `null` | Optional script for open |
-| `close_script` | string | `null` | Optional script for close |
-| `invert` | boolean | `false` | Reverse animation direction |
-| `show_buttons` | boolean | `true` | Show Open/Close buttons |
-| `show_meter` | boolean | `false` | Show percentage meter |
-| `slats` | number | `11` | Range 3–25 |
-| `slat_color` | string | theme-based | Hex recommended if auto-tint enabled |
-| `slat_shine_color` | string | auto | Optional override |
-| `fabric_mode` | boolean | `true` | Softer highlight/opacity |
-| `auto_tint` | `"off"\|"lux"` | `"off"` | Lux-based tint mode |
-| `light_entity` | string | `null` | Lux sensor entity |
-| `lux_min` | number | `0` | Lux at minimum tint |
-| `lux_max` | number | `60000` | Lux at maximum tint |
+| Option              | Type    | Default             | Description                      |
+| ------------------- | ------- | ------------------- | -------------------------------- |
+| `entity`            | string  | **required**        | Cover entity                     |
+| `name`              | string  | `"Vertical Blinds"` | Card title                       |
+| `invert`            | boolean | `false`             | Invert animation direction       |
+| `show_buttons`      | boolean | `true`              | Show Open/Close buttons          |
+| `show_percentage`   | boolean | `false`             | Show percentage in badge         |
+| `auto_hide_buttons` | boolean | `false`             | Hide buttons at endpoints        |
+| `slats`             | number  | `11`                | Number of slats (3–25)           |
+| `device_min`        | number  | `0`                 | Fully closed device value        |
+| `device_max`        | number  | `100`               | Fully open device value          |
+| `tap_action`        | string  | `"toggle"`          | `toggle`, `more-info`, or `none` |
 
 ---
 
-## Troubleshooting
+🎛 Device Calibration
 
-### “My changes don’t show up”
-- Bump your resource URL with a querystring:  
-  `/local/vertical-slats-card/vertical-slats-card-v2.js?v=6`
-- Hard refresh your browser (Ctrl+F5) or try a private/incognito window.
+Some devices (e.g. SwitchBot Blind Tilt) do not use 0–100 as their full range.
 
-### “The slats don’t animate”
-- Confirm `visual_entity` exists and updates (0–100).
-- Check Developer Tools → States to see the helper value changing.
-
-### “Auto-tint doesn’t work”
-- Ensure `auto_tint: lux` and `light_entity: sensor.*` are set.
-- `slat_color` should be a hex value for tinting (e.g. `#3f4f45`).
-- Verify `lux_min`/`lux_max` make sense for your sensor.
+Example:
+```yaml
+device_min: 0
+device_max: 75
+```
+This ensures the card displays 100% when the device reports 75 as fully open
 
 ---
 
-## Roadmap (nice-to-haves)
+🎨 Styling Options
 
-- Optional preset palette (fabric warm/cool/dark)
-- Optional label (“Open” / “Closed”) instead of %
-- HACS packaging (when ready)
-
----
-
-## Contributing
-
-PRs welcome. Keep changes:
-- backwards compatible where possible
-- config-driven (no hard-coded entity ids)
-- friendly to Home Assistant themes
+| Option             | Description                       |
+| ------------------ | --------------------------------- |
+| `slat_gap`         | Space between slats (px)          |
+| `slat_radius`      | Slat corner radius (px)           |
+| `slat_height`      | Height of slat area (px)          |
+| `slat_min_scale`   | How thin slats appear when closed |
+| `shine_strength`   | Shine intensity (0–1)             |
+| `shine_width`      | Width of highlight band           |
+| `slat_color`       | Base slat color                   |
+| `slat_shine_color` | Shine overlay color               |
 
 ---
 
-## Known limitations
+🌤 Optional Lux-Based Tinting
 
-- This card does **not** provide real tilt control.
-  Many vertical blind motors only expose `open_cover` / `close_cover`, and this card intentionally does not pretend otherwise.
-
-- Slat rotation is a **visual representation** driven by an `input_number` helper.
-  The helper reflects the *last commanded state*, not physical feedback from the motor.
-
-- Lux-based auto-tint adjusts **appearance only**.
-  It does not affect blind behavior or automation logic.
-
-- This card assumes a single blind group.
-  Per-slat or partial-rotation hardware is outside the scope of this project.
-
-These limitations are intentional and align with common real-world vertical blind hardware.
+You can tint slats based on outdoor light:
+```yaml
+auto_tint: lux
+light_entity: sensor.porch_lighting_sensor_illuminance
+lux_min: 0
+lux_max: 60000
+fabric_mode: true
+```
+If the sensor is unavailable, the card safely falls back to the base color.
 
 ---
 
+🖱 Tap Actions
+```yaml
+tap_action: toggle      # default
+tap_action: more-info
+tap_action: none
+```
+---
+
+🔄 Compatibility
+
+Home Assistant 2023.8+
+
+HACS compatible
+
+Mobile and desktop dashboards
+
+Fully backward compatible with v1.0.x
+
+---
 ## Support & feedback
 
 If you encounter a bug or have a feature request:
