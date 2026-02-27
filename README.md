@@ -211,7 +211,7 @@ This ensures the card displays 100% when the device reports 75 as fully open
 You can tint slats based on outdoor light:
 ```yaml
 auto_tint: lux
-light_entity: sensor.porch_lighting_sensor_illuminance
+light_entity: sensor.Illuminance
 lux_min: 0
 lux_max: 60000
 fabric_mode: true
